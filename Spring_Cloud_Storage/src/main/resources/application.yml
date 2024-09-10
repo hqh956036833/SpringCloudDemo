@@ -1,0 +1,39 @@
+server:
+  port: 20100
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/spring_cloud_storage?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&useSSL=false
+    username: root
+    password: hqh123
+  application:
+    name: storage
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: flag
+      logic-not-delete-value: 1
+      logic-delete-value: 0
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # mybatis-plus Sql日志打印
+  mapper-locations: /mapper/**/*.xml # mapper对应xml扫描路径
+
+seata:
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server # seate 服务端服务名
+      server-addr: 127.0.0.1:8848
+      group : SEATA_GROUP # seata 服务端分组名，请确保seata服务端与客户端的namespace和group一致
+      namespace: # seata 服务端命名空间
+      username:
+      password:
+      context-path:
+  tx-service-group: default_tx_group
+  service:
+    vgroup-mapping:
+      default_tx_group: default
