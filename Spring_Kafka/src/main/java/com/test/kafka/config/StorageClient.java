@@ -1,4 +1,4 @@
-package com.test.order.config;
+package com.test.kafka.config;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,10 +10,7 @@ import java.util.Map;
 
 @FeignClient("storage")
 public interface StorageClient {
-    @GetMapping("/storage/reduceStorage/{productId}")
-    String reduceStorage(@PathVariable("productId") Integer productId);
-
     @PostMapping("/storage/updatePurchase")
-    String updatePurchase(@RequestBody Map<String,String> updateKafkaMap);
+    void updatePurchase(@RequestBody Map<String,String> updateKafkaMap);
 }
 

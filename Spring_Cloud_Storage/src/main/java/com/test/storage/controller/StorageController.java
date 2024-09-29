@@ -4,10 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.test.storage.mapper.StorageMapper;
 import com.test.storage.pojo.Storage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/storage")
@@ -25,5 +24,9 @@ public class StorageController {
         return "库存扣减成功";
     }
 
+    @PostMapping("/updatePurchase")
+    public void updatePurchase(@RequestBody Map<String,String> updateKafkaMap){
+        System.out.println(updateKafkaMap.get("id")+"---"+updateKafkaMap.get("number"));
+    }
 }
 

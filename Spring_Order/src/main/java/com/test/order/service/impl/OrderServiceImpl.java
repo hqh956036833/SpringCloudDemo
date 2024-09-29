@@ -3,14 +3,24 @@ package com.test.order.service.impl;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.test.order.config.KafkaClient;
 import com.test.order.mapper.OrderMapper;
 import com.test.order.pojo.Order;
 import com.test.order.service.OrderService;
 import com.test.order.config.StorageClient;
 import io.seata.spring.annotation.GlobalTransactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import javax.annotation.Resource;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -22,6 +32,10 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderMapper orderMapper;
 
+    @Autowired
+    private KafkaClient kafkaClient;
+
+    private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
     @GlobalTransactional
     @Override
     public String createOrder(Order order) {
@@ -47,6 +61,14 @@ public class OrderServiceImpl implements OrderService {
     public String getOrderListBlockHandler(BlockException be) {
         be.printStackTrace();
         return "触发熔断降级处理规则";
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> sendMessage(String topic, Map<String, Object> message) {
+        logger.info("向指定主题发送信息，topic={},message={}", topic, message);
+        return kafkaClient.sendMessage(topic,message);
+
     }
 
 }
